@@ -41,6 +41,8 @@ package org.glassfish.jersey.server.spring.aspect4j;
 
 import javax.ws.rs.core.Application;
 
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +65,11 @@ public class Aspect4JTest extends JerseyTest {
     protected Application configure() {
         applicationContext = new ClassPathXmlApplicationContext("jersey-spring-aspect4j-applicationContext.xml");
         testAspect = applicationContext.getBean(TestAspect.class);
-        return new Aspect4jJerseyConfig()
+        return new ResourceConfig()
+                .register(RequestContextFilter.class)
+                .register(NoComponentResource.class)
+//                .register(ComponentResource.class)
+                .register(applicationContext.getBean(ComponentResource.class))
                 .property("contextConfig", applicationContext);
     }
 
